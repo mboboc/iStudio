@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from istudio.core.models import User
+from django.contrib.auth.admin import UserAdmin
+
+
+@admin.register(User)
+class iStudioUserAdmin(UserAdmin):
+    ordering = ["email"]

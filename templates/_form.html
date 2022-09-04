@@ -1,0 +1,31 @@
+{% load bootstrap4 %}
+
+{% bootstrap_css %}
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="form-row d-flex justify-content-center align-items-cente center-block text-center">
+      <div class="col-lg-7">
+      {% if field.field.widget.input_type != "select" %}
+        <input type={{ field.field.widget.input_type }} name={{ field.html_name }} placeholder="{{ field.label }}" class="form-control my-3 p-4"/>
+      {% elif field.field.widget.input_type == "select" %}
+        {{ field.field.empty_value }}
+        <select name={{ field.html_name }} class="form-select auth--input my-3 p-4 rounded bg-white text-secondary">
+          <option selected>Select your {{ field.html_name }}</option>
+          {% for id, name in field.field.choices %}
+            <option value="{{ id }}">{{ name }}</option>
+          {% endfor %}
+        </select>
+      {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="form-row d-flex justify-content-center align-items-cente center-block text-center">
+    <div class="col-lg-7">
+      {% bootstrap_form_errors form %}
+      <input type="submit" value="Submit" class="btn btn-primary m-3"/>
+    </div>
+  </div>
+</form>

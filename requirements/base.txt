@@ -1,1 +1,5 @@
 Django==4.0.*
+django-phonenumber-field[phonenumbers]
+django-bootstrap4
+fontawesomefree
+django-email-verification

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="h-100">
+  <div class="container h-100">
+    <div class="row custom-row no-gutters d-flex justify-content-center align-items-center h-100 pb-5 center-block text-center">
+        <div class="col-lg-7 border px-5 pt-5 rounded">
+          <h1 class="font-weight-bold py-3"><a href="{% url 'home' %}" class="black-link">iStudio</a></h1>
+          <h4 >Sign into your account</h4>
+          {% include "_form.html" %}
+          <a href="#" >Forgot password</a>
+          <p>Don't have an account? <a href="{% url 'signup' %}">Register here</a></p>
+        </div>
+    </div>
+</div>
+</section>
+{% endblock %}

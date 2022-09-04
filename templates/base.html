@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="h-100">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}"/>
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+  </head>
+  <body class="h-100">
+    {% include "_navbar.html" %}
+    {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == "success" %}
+        <div class="alert alert-success" role="alert">
+          {{ message }}
+        </div>
+      {% elif message.tags == "danger" %}
+        <div class="alert alert-danger" role="alert">
+          {{ message }}
+        </div>
+      {% else %}
+        <div class="alert alert-warning" role="alert">
+          {{ message }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+    {% block content %}{% endblock %}
+    {% include "_footer.html" %}
+  </body>
+</html>
