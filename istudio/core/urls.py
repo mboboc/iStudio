@@ -13,4 +13,5 @@ urlpatterns = [
         auth_views.LoginView.as_view(redirect_authenticated_user=True),
         name="login",
     ),
+    path("qr", views.qr, name="qr")
 ]

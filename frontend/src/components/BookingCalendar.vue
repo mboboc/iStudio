@@ -11,10 +11,22 @@
       @next-date="nextDate"
       @previous-date="previousDate"
     >
+     <template #meeting="{ meeting }">
+        <div
+          v-if="meeting.date"
+          :class="meetingSelectedClass(meeting)"
+          @click="selectMeeting(meeting)">
+          {{ formatingTime(meeting.date) }}
+        </div>
+        <div v-else class="meeting--empty">
+          &mdash;
+        </div>
+      </template>
     </vue-meeting-selector>
-    <p>meeting Selected: {{ meeting ? meeting : "No Meeting selected" }}</p>
-    <button @click="submit" class="btn btn-primary">Book interval</button>
-    {{ bookedIntervals }}
+    <h2>{{ meeting ? `${getDayOfTheWeek(meeting.date)}, ${meeting.date.getUTCDate()} ${getMonth(meeting.date)} at ${formatingTime(meeting.date)}, ${getTimeZone()} time` : "No interval selected" }}</h2>
+    <button v-if="meeting" @click="submit" class="btn btn-dark btn-lg">Book interval</button>
+    <button v-else class="btn btn-dark btn-lg" disabled>Book interval</button>
+
   </div>
 </template>
 
@@ -24,10 +36,18 @@ import VueMeetingSelector from "vue-meeting-selector";
 import slotsGenerator from "vue-meeting-selector/src/helpers/slotsGenerator";
 import api from "@/api.js";
 
+var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
 export default defineComponent({
   data () {
     return {
       bookedIntervals: window.hydrate.booked_intervals
+    }
+  },
+  computed: {
+    bookedIntervalsTime() {
+      return this.bookedIntervals.map(date => new Date(date).getTime())
     }
   },
   components: {
@@ -67,11 +87,11 @@ export default defineComponent({
 
     const nextDate = () => {
       const start = {
-        hours: 8,
+        hours: 0,
         minutes: 0,
       };
       const end = {
-        hours: 16,
+        hours: 23,
         minutes: 0,
       };
       const d = new Date(date.value);
@@ -82,7 +102,7 @@ export default defineComponent({
         nbDaysToDisplay.value,
         start,
         end,
-        30
+        60
       );
     };
 
@@ -138,17 +158,114 @@ export default defineComponent({
   methods: {
     async submit() {
       try {
-        await api.saveForm("", this.meeting)
+        await api.saveForm("", this.meeting).then()
       } catch (e) {
         alert("The interval is already taken. Choose another interval and try again.");
       }
+      window.location.href = 'qr';
+    },
+    // display meeting selected diferently
+    meetingSelectedClass(meeting) {
+      const booked = this.bookedIntervalsTime?.includes(this.getDateFormat(meeting))
+      if (booked)
+        return 'meeting meeting--readonly'
+      if (!this.meeting) {
+        return booked ? 'meeting--readonly' : 'meeting'
+      }
+      const selectedDate = new Date(meeting.date);
+      const date = new Date(this.meeting.date);
+      if (selectedDate.getTime() === date.getTime()) {
+        return 'meeting meeting--selected';
+      }
+      return this.bookedIntervalsTime?.includes(this.getDateFormat(meeting)) ? 'meeting--readonly' : 'meeting'
+    },
+    // @click on meeting
+    selectMeeting(meeting) {
+      if (this.meeting) {
+        const selectedDate = new Date(meeting.date);
+        const date = new Date(this.meeting.date);
+        if (selectedDate.getTime() !== date.getTime()) {
+          this.meeting = meeting;
+        } else {
+          this.meeting = undefined;
+        }
+      } else {
+        this.meeting = meeting;
+      }
+    },
+    formatingDate(dateToFormat) {
+      const d = new Date(dateToFormat);
+      const day = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate();
+      const month = d.getMonth() + 1 < 10 ? `0${d.getMonth() + 1}` : d.getMonth() + 1;
+      const year = d.getFullYear();
+      return `${year}-${month}-${day}`;
+    },
+    formatingTime(date) {
+      const d = new Date(date);
+      const hours = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours();
+      const minutes = d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes();
+      return `${hours}:${minutes}`;
+    },
+    getDateFormat(meeting) {
+      if (!meeting)
+        return ""
+      return new Date(meeting.date).getTime();
+    },
+    getDayOfTheWeek(date) {
+      return days[date.getDay()];
+    },
+    getMonth(date) {
+      return months[date.getMonth()];
+    },
+    getTimeZone() {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone
     }
   }
 });
 </script>
 
-<style scoped>
-  .meeting-selector {
-    padding: 100px;
+<style scoped lang="scss">
+.meeting-selector {
+    padding: 20px;
   }
+.slots-example {
+  &__meeting-selector {
+    max-width: 542px;
+  }
+}
+.title {
+  margin: 0 5px;
+}
+.meeting {
+  display: inline-block;
+  padding: 60px;
+  margin: 5px 0;
+  background-color: #23E795;
+  border-radius: 4px;
+  color: black;
+  cursor: pointer;
+  &--selected {
+    background-color: #B39CD0;
+  }
+  &--empty {
+    display: inline-block;
+    padding: 5px;
+    margin: 5px 0;
+    cursor: not-allowed;
+  }
+  &--readonly {
+    background-color: #DD2D4A;
+    cursor: not-allowed;
+    display: inline-block;
+  }
+}
+.button-pagination {
+  border: none;
+  padding: 0;
+  width: 30px;
+}
+// since our scss is scoped we need to use ::v-deep
+::v-deep .loading-div {
+  top: 32px!important;
+}
 </style>

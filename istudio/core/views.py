@@ -4,7 +4,6 @@ from django.views import generic
 from django.urls import reverse_lazy
 from istudio.core.forms import ReservationForm, UserRegisterForm
 from django.shortcuts import render
-from django.contrib import messages
 from django.http import JsonResponse
 
 from istudio.core.models import Reservation
@@ -19,7 +18,7 @@ class SignupView(generic.CreateView):
 
 def home(request):
     user = request.user
-    booked_invervals = list(Reservation.objects.all().values_list('date', flat=True))
+    booked_invervals = list(Reservation.objects.all().values_list("date", flat=True))
     print(booked_invervals)
     if request.method == "POST":
         form = ReservationForm(json.loads(request.body.decode("utf-8")))
@@ -32,14 +31,13 @@ def home(request):
             except:
                 return JsonResponse({"ok": False})
         else:
-            return JsonResponse({"ok": False})
+            return JsonResponse({"error": "Form not valid"}, status=400)
     return render(
         request,
         "home.html",
-        {
-            "user": user,
-            "hydrate": {
-                "booked_intervals": booked_invervals
-            }
-        },
+        {"user": user, "hydrate": {"booked_intervals": booked_invervals}},
     )
+
+
+def qr(request):
+    return render(request, "qr.html", {})
