@@ -1,0 +1,10 @@
+
+{% load bootstrap4 %}
+{% bootstrap_css %}
+
+<nav class="navbar navbar-light bg-light justify-content-between">
+    <a class="navbar-brand">iStudio</a>
+    {% if user.is_authenticated %}
+        {{ user }}
+    {% endif %}
+</nav>

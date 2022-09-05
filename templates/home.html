@@ -1,7 +1,22 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-
-{{ user }}
+{% if user.is_authenticated %}
+  <div id="app"></div>
+{% else %}
+    <div class="container h-100">
+      <div class="row custom-row no-gutters d-flex justify-content-center align-items-center h-100 pb-5 center-block text-center">
+        <div class="col-lg-7 border px-5 py-5 rounded">
+        Login to book your spot!
+        <div>
+          <a class="btn btn-primary text-uppercase js-scroll-trigger" href="/login">Login</a>
+          or
+          <a class="btn btn-primary text-uppercase js-scroll-trigger" href="/signup">Join us</a>
+        <div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
 
 {% endblock %}
