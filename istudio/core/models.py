@@ -1,6 +1,4 @@
-from django.db import models
-
-# Create your models here.
+import json
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import AbstractUser, BaseUserManager
@@ -29,3 +27,7 @@ class User(AbstractUser):
     objects = UserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["phone", "name", "city"]
+
+class Reservation(models.Model):
+    user = models.ForeignKey("User", null=True, blank=True, on_delete=models.CASCADE)
+    date = models.CharField(max_length=100, unique=True)

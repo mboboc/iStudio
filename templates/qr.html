@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Reservation succesfull! We are waiting for you at the expected time!
+{% else %}
+    Sorry, you need to login first!
+{% endif %}
+{% endblock %}

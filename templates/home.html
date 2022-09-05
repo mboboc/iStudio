@@ -17,6 +17,9 @@
         </div>
       </div>
     </div>
-    {% endif %}
-
+{% endif %}
+{{ hydrate|json_script:"hydrate" }}
+<script>
+  window.hydrate = JSON.parse(document.getElementById("hydrate").textContent);
+</script>
 {% endblock %}
