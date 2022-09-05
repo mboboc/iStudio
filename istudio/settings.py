@@ -120,15 +120,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = 'var/static_root/'
 STATIC_DIR = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# STATICFILES_DIRS = [
-#     ("images", BASE_DIR / "static" / "images"),
-# ]
-STATIC_ROOT = BASE_DIR / "static"
+STATICFILES_DIRS = ['static']
 
 MEDIA_ROOT = BASE_DIR
 MEDIA_URL = "media/"
