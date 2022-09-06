@@ -56,7 +56,7 @@ export default defineComponent({
   setup() {
     const meeting = ref(null);
     const meetingsDays = ref([]);
-    const nbDaysToDisplay = ref(5);
+    const nbDaysToDisplay = ref(7);
     const date = ref(new Date());
 
     const initMeetingsDays = () => {
@@ -108,11 +108,11 @@ export default defineComponent({
 
     const previousDate = () => {
       const start = {
-        hours: 8,
+        hours: 0,
         minutes: 0,
       };
       const end = {
-        hours: 16,
+        hours: 23,
         minutes: 0,
       };
       const d = new Date(date.value);
@@ -140,7 +140,7 @@ export default defineComponent({
         nbDaysToDisplay.value,
         start,
         end,
-        30
+        60
       );
     };
 
@@ -241,7 +241,7 @@ export default defineComponent({
 }
 .meeting {
   display: inline-block;
-  padding: 60px;
+  padding: 50px;
   margin: 5px 0;
   background-color: #23E795;
   border-radius: 4px;
