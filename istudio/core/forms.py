@@ -11,4 +11,4 @@ class UserRegisterForm(UserCreationForm):
 class ReservationForm(ModelForm):
     class Meta:
         model = Reservation
-        fields = ["date"]
+        fields = ["date", "qr"]

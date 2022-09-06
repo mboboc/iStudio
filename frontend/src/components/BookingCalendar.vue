@@ -158,11 +158,14 @@ export default defineComponent({
   methods: {
     async submit() {
       try {
-        await api.saveForm("", this.meeting).then()
+        await api.saveForm("", this.meeting).then(function(response) {
+          return response.json();
+        }).then(function(data) {
+          window.location.href = `qr/${data.date}`
+        });
       } catch (e) {
         alert("The interval is already taken. Choose another interval and try again.");
       }
-      window.location.href = 'qr';
     },
     // display meeting selected diferently
     meetingSelectedClass(meeting) {

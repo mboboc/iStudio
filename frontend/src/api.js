@@ -37,7 +37,8 @@ class Api {
         `Failed to save form: ${response.status} ${response.statusText}`
       );
     }
-    await this._handleErrors(response);
+    // await this._handleErrors(response);
+    return response
   }
 }
 

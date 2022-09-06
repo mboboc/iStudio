@@ -31,3 +31,4 @@ class User(AbstractUser):
 class Reservation(models.Model):
     user = models.ForeignKey("User", null=True, blank=True, on_delete=models.CASCADE)
     date = models.CharField(max_length=100, unique=True)
+    qr = models.ImageField(blank=True, null=True, upload_to='static/qrcodes')

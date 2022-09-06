@@ -3,7 +3,24 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  Reservation succesfull! We are waiting for you at the expected time!
+  <div class="container h-100">
+    <div class="row custom-row no-gutters d-flex justify-content-center align-items-center h-100 pb-5 center-block text-center">
+        <div>
+          <h1 class="m-5">
+            Reservation No. {{ code }} was made successfully!
+          </h1>
+          <h4 class="">The studio has been reserved for:</h4>
+          <h2 class="mb-3">{{ time }}</h2>
+        <div>
+        <div class="border px-5 py-5 bg-success bg-gradient">
+          <img class="img-fluid" src="{% static qr %}"/>
+        </div>
+
+        <h4 class="m-4">
+          Scan this QR code at the entrance
+        </h4>
+  </div>
+
 {% else %}
     Sorry, you need to login first!
 {% endif %}
