@@ -3,8 +3,15 @@
 {% bootstrap_css %}
 
 <nav class="navbar navbar-light bg-light justify-content-between mb-2">
-    <a class="navbar-brand">iStudio</a>
+    <a href="{% url 'home' %}" class="navbar-brand">iStudio</a>
     {% if user.is_authenticated %}
-        {{ user }}
+        <div class="nav">
+            <li class="nav-item nav-link">
+                {{ user.first_name }} {{ user.last_name }}
+            </li>
+            <li class="nav-item">
+                <a class="nav-link js-scroll-trigger" href="{% url 'logout' %}">Log out</a>
+            </li>
+        </div>
     {% endif %}
 </nav>
