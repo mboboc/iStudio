@@ -20,13 +20,14 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    name = models.CharField(max_length=100, blank=True)
     username = None
     ordering = ("email",)
     email = models.EmailField(("email address"), unique=True)
     phone = PhoneNumberField(null=False, blank=False, unique=True)
     objects = UserManager()
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["phone", "name", "city"]
+    REQUIRED_FIELDS = []
 
 class Reservation(models.Model):
     user = models.ForeignKey("User", null=True, blank=True, on_delete=models.CASCADE)
