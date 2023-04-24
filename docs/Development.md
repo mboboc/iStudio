@@ -24,8 +24,7 @@ To avoid porblems with Python versions, we work inside a virtual environment tha
 1. Install requirements
 
     ```
-    pip install pip-tools
-    pip-sync requirements/base.txt
+    pip install -r requirements/base.txt --ignore-installed
     ```
 
 1. Run migrations
@@ -38,10 +37,5 @@ To avoid porblems with Python versions, we work inside a virtual environment tha
 
     ```
     python manage.py runserver
-    ```
-
-1. Compile requirements
-    ```
-    pip-compile requirements/base.in
     ```
 

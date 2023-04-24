@@ -1,21 +1,50 @@
+import dateutil.parser as dp
 import json
-import os
-import tempfile
 import qrcode
-from pathlib import Path
+import tempfile
+import pytz
+import pyrebase
+
 from django.contrib.auth.forms import UserCreationForm
 from django.views import generic
 from django.urls import reverse_lazy
-from istudio.core.forms import ReservationForm, UserRegisterForm
 from django.shortcuts import render
 from django.http import JsonResponse
-import dateutil.parser as dp
 from django.core.files.images import ImageFile
 
 from istudio.core.models import Reservation
+from istudio.core.forms import ReservationForm, UserRegisterForm
 
-days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+config = {
+  "apiKey": "AIzaSyDVoPt75RpCkReVnf04O9mO1d94f5p8VeI",
+  "authDomain": "istudio-70ff0.firebaseapp.com",
+  "databaseURL": "https://istudio-70ff0-default-rtdb.firebaseio.com",
+  "projectId": "istudio-70ff0",
+  "storageBucket": "istudio-70ff0.appspot.com",
+  "messagingSenderId": "17753533532",
+  "appId": "1:17753533532:web:9603dc3a94d0cd4c99ca99",
+}
+
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
+database = firebase.database()
+
+days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+]
+
 
 class SignupView(generic.CreateView):
     form_class = UserCreationForm
@@ -35,7 +64,8 @@ def home(request):
         if form.is_valid():
             reservation = form.save(commit=False)
             reservation.user = user
-
+            # database.child("appointments").push(str(reservation.date.split(":")[0]))
+            database.child("appointments").child(str(reservation.date.split(":")[0])).set(str(reservation.user))
             # Generate qr code for reservation
             with tempfile.TemporaryDirectory(dir=".") as tmpdirname:
                 filename = f"reservation-{getCode(reservation.date)}.png"
@@ -56,13 +86,28 @@ def home(request):
     return render(
         request,
         "home.html",
-        {"user": user, "hydrate": {"booked_intervals": booked_invervals}},
+        {
+            "user": user,
+            "hydrate": {
+                "booked_intervals": booked_invervals
+            },
+        },
     )
 
 
 def qr(request, date):
     print(type(date))
     reservation = Reservation.objects.get(user=request.user, date=date)
-    date = dp.parse(date)
-    time = f"{days[date.weekday()]}, {date.day} {months[date.month]} {date.year} at {date.time()}, Europe/Bucharest time"
-    return render(request, "qr.html", {"qr": reservation.qr.path.split("static", 1)[1], "code": int(date.timestamp()), "time": time})
+    utc_date = dp.parse(date)
+    eet = pytz.timezone('Europe/Bucharest')
+    date = utc_date.astimezone(eet)
+    time = f"{days[date.weekday()]}, {date.day} {months[date.month]} {date.year} at {date.time()}, {eet} time"
+    return render(
+        request,
+        "qr.html",
+        {
+            "qr": reservation.qr.path.split("static", 1)[1],
+            "code": int(date.timestamp()),
+            "time": time,
+        },
+    )
